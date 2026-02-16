@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/context/auth";
+import "@/global.css";
 import {
   DarkTheme,
   DefaultTheme,

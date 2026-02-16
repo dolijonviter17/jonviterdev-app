@@ -24,7 +24,8 @@
       "package": "com.jonvitermobiledev17.jonviterdevapp"
     },
     "web": {
-      "output": "static",
+      "bundler": "metro",
+      "output": "server",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
