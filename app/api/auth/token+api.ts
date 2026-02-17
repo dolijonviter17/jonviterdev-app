@@ -1,3 +1,4 @@
+import { registerWithGoogle } from "@/services/authentication";
 import {
   COOKIE_MAX_AGE,
   COOKIE_NAME,
@@ -59,6 +60,9 @@ export async function POST(request: Request) {
 
   // Generate a unique jti (JWT ID) for the refresh token
   const jti = crypto.randomUUID();
+  const register_account = await registerWithGoogle({ ...userInfo, jti });
+  const { response: google_account } = register_account;
+  console.log("google_account", google_account);
 
   // Create access token (short-lived)
   const accessToken = await new jose.SignJWT(userInfoWithoutExp)
