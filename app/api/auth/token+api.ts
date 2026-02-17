@@ -1,4 +1,7 @@
-import { registerWithGoogle } from "@/services/authentication";
+import {
+  registerWithGoogle,
+  updateUserGoogleById,
+} from "@/services/authentication";
 import {
   COOKIE_MAX_AGE,
   COOKIE_NAME,
@@ -77,6 +80,7 @@ export async function POST(request: Request) {
     sub,
     jti, // Include a unique ID for this refresh token
     type: "refresh",
+    _id: google_account._id,
     // Include all user information in the refresh token
     // This ensures we have the data when refreshing tokens
     name: (userInfo as any).name,
@@ -91,6 +95,9 @@ export async function POST(request: Request) {
     .setIssuedAt(issuedAt)
     .sign(new TextEncoder().encode(JWT_SECRET));
 
+  await updateUserGoogleById(google_account._id, {
+    accessToken: refreshToken,
+  });
   if (data.error) {
     return Response.json(
       {

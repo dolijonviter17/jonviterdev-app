@@ -10,3 +10,14 @@ export const registerWithGoogle = async (data: any): Promise<any> => {
   );
   return response.json();
 };
+
+export const updateUserGoogleById = async (
+  id: string,
+  data: any,
+): Promise<any> => {
+  const response = await fetch(`${EXPO_PUBLIC_API_URL}/users/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+  return response.json();
+};
