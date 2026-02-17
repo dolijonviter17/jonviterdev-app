@@ -1,3 +1,4 @@
+import { updateUserGoogleById } from "@/services/authentication";
 import {
   COOKIE_MAX_AGE,
   COOKIE_NAME,
@@ -210,35 +211,18 @@ export async function POST(request: Request) {
 
     // Check if we have all the required user information
     // If not, we need to add it to ensure ProfileCard works correctly
-    const hasRequiredUserInfo =
-      userInfo.name && userInfo.email && userInfo.picture;
-
     // Create a complete user info object
-    let completeUserInfo = { ...userInfo };
+    // let completeUserInfo = { ...userInfo };
 
     // If we're missing user info, try to fetch it from a user database or service
     // For this example, we'll just ensure the type field is preserved
-    if (!hasRequiredUserInfo) {
-      // In a real implementation, you would fetch the user data from your database
-      // using the sub (user ID) as the key
-      // For now, we'll just ensure we keep the refresh token type
-      completeUserInfo = {
-        ...userInfo,
-        // Preserve the refresh token type
-        type: "refresh",
-        // Add any missing fields that might be needed by the UI
-        // These would normally come from your user database
-        name: userInfo.name || `apple-user`,
-        email: userInfo.email || `apple-user`,
-        picture:
-          userInfo.picture ||
-          `https://ui-avatars.com/api/?name=User&background=random`,
-      };
-    }
+    // In a real implementation, you would fetch the user data from your database
+    // using the sub (user ID) as the key
+    // For now, we'll just ensure we keep the refresh token type
 
     // Create a new access token with complete user info
     const newAccessToken = await new jose.SignJWT({
-      ...completeUserInfo,
+      ...userInfo,
       // Remove the refresh token specific fields from the access token
       type: undefined,
     })
@@ -248,16 +232,39 @@ export async function POST(request: Request) {
       .setIssuedAt(issuedAt)
       .sign(new TextEncoder().encode(JWT_SECRET));
 
+    let completeUserInfo = {
+      sub,
+      jti, // Include a unique ID for this refresh token
+      type: "refresh",
+      // Include all user information in the refresh token
+      // This ensures we have the data when refreshing tokens
+      name: userInfo.name || `apple-user`,
+      email: userInfo.email || `apple-user`,
+      picture:
+        userInfo.picture ||
+        `https://ui-avatars.com/api/?name=User&background=random`,
+      given_name: userInfo.given_name,
+      family_name: userInfo.family_name,
+      email_verified: userInfo.email_verified,
+    };
     // Create a new refresh token (token rotation)
+    let _id_user = userInfo._id as string;
     const newRefreshToken = await new jose.SignJWT({
       ...completeUserInfo,
-      jti,
+      _id: _id_user,
       type: "refresh",
     })
       .setProtectedHeader({ alg: "HS256" })
       .setExpirationTime(REFRESH_TOKEN_EXPIRY)
       .setIssuedAt(issuedAt)
       .sign(new TextEncoder().encode(JWT_SECRET));
+
+    const update_google_account = await updateUserGoogleById(_id_user, {
+      ...completeUserInfo,
+      accessToken: newRefreshToken,
+    });
+    const { response: update_user } = update_google_account;
+    console.log("update_google_account", update_user);
 
     // Handle web platform with cookies
     if (platform === "web") {

@@ -1,3 +1,4 @@
+import { tokenCache } from "@/utils/cache";
 import { EXPO_PUBLIC_API_URL } from "@/utils/constants";
 import axios from "axios";
 console.log("EXPO_PUBLIC_API_URL", EXPO_PUBLIC_API_URL);
@@ -10,15 +11,14 @@ export const apiClient = axios.create({
   },
 });
 
-// apiClient.interceptors.request.use(async (config) => {
-//   const token = await tokenCache?.getToken("accessToken");
+apiClient.interceptors.request.use(async (config) => {
+  const token = await tokenCache?.getToken("accessToken");
+  if (token) {
+    config.headers.Authorization = `${token}`;
+  }
 
-//   if (token) {
-//     config.headers.Authorization = `${token}`;
-//   }
-
-//   return config;
-// });
+  return config;
+});
 
 apiClient.interceptors.response.use(
   (response) => response,

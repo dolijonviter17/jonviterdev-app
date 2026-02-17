@@ -1,3 +1,4 @@
+import { updateUserGoogleById } from "@/services/authentication";
 import { tokenCache } from "@/utils/cache";
 import { BASE_URL } from "@/utils/constants";
 import { handleAppleAuthError } from "@/utils/handleAppleError";
@@ -622,7 +623,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await tokenCache?.deleteToken("accessToken");
       await tokenCache?.deleteToken("refreshToken");
     }
-
+    let _id_user = user?._id as string;
+    await updateUserGoogleById(_id_user, {
+      accessToken: null,
+    });
     // Clear state
     setUser(null);
     setAccessToken(null);

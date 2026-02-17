@@ -2,6 +2,7 @@ import { COOKIE_NAME, JWT_SECRET } from "@/utils/constants";
 import * as jose from "jose";
 
 export type AuthUser = {
+  _id: string;
   id: string;
   email: string;
   name: string;
