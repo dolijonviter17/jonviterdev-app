@@ -49,3 +49,6 @@ export const REFRESH_COOKIE_OPTIONS = {
   path: "/api/auth/refresh", // Restrict to refresh endpoint only
   maxAge: REFRESH_TOKEN_MAX_AGE,
 };
+
+// Backend Server
+export const EXPO_PUBLIC_API_URL = process.env.EXPO_PUBLIC_API_URL;

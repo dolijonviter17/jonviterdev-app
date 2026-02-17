@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/auth";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
@@ -12,6 +13,8 @@ import {
 } from "react-native";
 
 const LoginScreen = () => {
+  const router = useRouter();
+
   const { user, isLoading, signIn } = useAuth();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -26,9 +29,7 @@ const LoginScreen = () => {
     );
   }
 
-  // if (!user) {
-  //   return <LoginForm />;
-  // }
+  const loginUser = async () => {};
   return (
     <View className="flex-1 bg-[#4F8FCC]">
       {/* ===== HEADER ===== */}
@@ -96,12 +97,18 @@ const LoginScreen = () => {
         </View>
 
         {/* Login Button */}
-        <TouchableOpacity className="bg-primary py-4 rounded-xl items-center mb-6">
+        <TouchableOpacity
+          className="bg-primary py-4 rounded-xl items-center mb-6"
+          onPress={loginUser}
+        >
           <Text className="text-white font-semibold text-lg">Login</Text>
         </TouchableOpacity>
 
         {/* Register */}
-        <TouchableOpacity className="items-center">
+        <TouchableOpacity
+          className="items-center"
+          onPress={() => router.push("/(auth)/register")}
+        >
           <Text className="text-blue-600 font-medium">Register ?</Text>
         </TouchableOpacity>
 
@@ -122,11 +129,6 @@ const LoginScreen = () => {
           <Text className="ml-3 text-gray-700 font-medium text-base">
             Continue with Google
           </Text>
-        </TouchableOpacity>
-
-        {/* Register */}
-        <TouchableOpacity className="items-center">
-          <Text className="text-blue-600 font-medium">Register ?</Text>
         </TouchableOpacity>
       </View>
     </View>

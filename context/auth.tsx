@@ -356,7 +356,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           },
           appleDiscovery,
         );
-        console.log("response", response);
+        console.log("response google", response);
         if (isWeb) {
           // For web: The server sets the tokens in HTTP-only cookies
           // We just need to get the user data from the response
